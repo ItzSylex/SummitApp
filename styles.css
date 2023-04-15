@@ -1,0 +1,79 @@
+/* variables */
+
+:root {
+    --bg_color: #22263f;
+  }
+
+/* Font */
+
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;400;700&display=swap');
+html, body, [class*="css"] {
+    font-family: 'Azeret Mono', monospace;
+}
+
+/* Expander into container*/
+
+.streamlit-expander{
+    padding: 8px;
+    border-radius: 8px;
+    background-color: var(--bg_color);
+    border-color: var(--bg_color);
+}
+
+/* This removes the ability to expand / de-expand the expander */
+
+.streamlit-expanderHeader > svg{
+    display: none;
+}
+
+.streamlit-expanderHeader{
+    display: none;
+}
+
+
+/* Buttons */
+
+.stButton > button {
+
+}
+
+.stButton > button:hover {
+
+}
+
+.stDownloadButton > button{
+
+}
+
+.stDownloadButton > button:hover{
+
+}
+
+/* Form */
+
+[data-testid="stForm"] {
+    background-color: var(--bg_color);
+    border-color: var(--bg_color);
+}
+
+
+/* Text area */
+
+[data-baseweb="textarea"]{
+    border-radius: 20px;
+}
+
+
+/* Selectbox */
+
+/* Selectbox Label */
+/* 
+.stSelectbox > label > [data-testid="stMarkdownContainer"] > p {
+    font-size: 300px;
+} */
+
+/* Selectbox container */
+
+/* .stSelectbox [data-baseweb="select"] {
+    background-color: brown !important; */
+}
