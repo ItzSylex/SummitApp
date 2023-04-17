@@ -1,34 +1,82 @@
 /* variables */
 
 :root {
-    --bg_color: #22263f;
+    --bg_color: #1c1d26;
+    --highlight: #F8B27A;
+    --contrast: #242530;
+    --container-font-color: #999999 ;
   }
 
 /* Font */
 
-@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&display=swap');
 html, body, [class*="css"] {
-    font-family: 'Azeret Mono', monospace;
+    font-family: 'Roboto Mono', monospace;
 }
 
-/* Expander into container*/
+h2 {
+    color: var(--highlight);
+    font-size:  3.5rem;
+    font-weight: 700;
+    padding-bottom: 1rem;
+}
 
-.streamlit-expander{
+h3{
+    color: var(--highlight);
+    font-size:  5rem;
+    font-weight: 700;
+    padding-bottom: 20px;
+}
+
+p {
+    font-size: 1.1rem;
+    line-height: 2em;
+}
+
+
+.highlight{
+    color: var(--highlight);
+}
+
+/* This removes the ability to expand / de-expand the expander and makes it a container like component */
+
+[data-testid="stSidebar"]  .streamlit-expander{
     padding: 8px;
     border-radius: 8px;
     background-color: var(--bg_color);
     border-color: var(--bg_color);
 }
 
-/* This removes the ability to expand / de-expand the expander */
+[data-testid="stSidebar"] .streamlit-expanderHeader{
+    display: none;
+}
+
+.streamlit-expander{
+    background-color: var(--contrast);
+    border-color: var(--contrast);
+}
+
+.streamlit-expanderHeader{
+    /* display: none !important; */
+    color: var(--container-font-color);
+    pointer-events: none;
+}
 
 .streamlit-expanderHeader > svg{
     display: none;
 }
 
-.streamlit-expanderHeader{
-    display: none;
+
+[data-testid="stHorizontalBlock"] [data-testid="column"]{
+    display: flex;
+}   
+
+[data-testid="stHorizontalBlock"] [data-testid="column"] :first-child{
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
 }
+
 
 
 /* Buttons */
@@ -74,6 +122,6 @@ html, body, [class*="css"] {
 
 /* Selectbox container */
 
-/* .stSelectbox [data-baseweb="select"] {
-    background-color: brown !important; */
+.stSelectbox [data-baseweb="select"] > div {
+    background-color: var(--contrast);
 }
