@@ -22,9 +22,9 @@ h2 {
 }
 
 h3{
-    color: var(--highlight);
-    font-size:  5rem;
+    color: var(--highlight); 
     font-weight: 700;
+    font-size: 2rem;
     padding-bottom: 20px;
 }
 
