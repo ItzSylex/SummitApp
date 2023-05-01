@@ -1,9 +1,9 @@
 /* variables */
 
 :root {
-    --bg_color: #1c1d26;
+    --bg_color: #101018;
     --highlight: #F8B27A;
-    --contrast: #242530;
+    --contrast: #181824;
     --container-font-color: #999999 ;
   }
 
@@ -24,8 +24,12 @@ h2 {
 h3{
     color: var(--highlight); 
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 3rem;
     padding-bottom: 20px;
+}
+
+h3 > div > a, h3 > div > svg {
+    display: none;
 }
 
 p {
@@ -49,6 +53,11 @@ p {
 
 [data-testid="stSidebar"] .streamlit-expanderHeader{
     display: none;
+}
+
+[data-testid="stSidebar"]{
+    min-width: 270px;
+    max-width: 270px;
 }
 
 .streamlit-expander{
@@ -77,8 +86,6 @@ p {
     flex-direction: column;
 }
 
-
-
 /* Buttons */
 
 .stButton > button {
@@ -96,12 +103,10 @@ p {
 .stDownloadButton > button:hover{
 
 }
-
 /* Form */
 
 [data-testid="stForm"] {
-    background-color: var(--bg_color);
-    border-color: var(--bg_color);
+    border: 0;
 }
 
 

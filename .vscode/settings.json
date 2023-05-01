@@ -1,0 +1,26 @@
+{
+    "cSpell.words": [
+        "Alajuela",
+        "Cartago",
+        "CRIMETYPESDIM",
+        "DATEDIM",
+        "DELITOID",
+        "FACTCRIMES",
+        "FECHAID",
+        "Guanacaste",
+        "Heredia",
+        "HORAID",
+        "Limon",
+        "Puntarenas",
+        "REGIONDIM",
+        "REGIONID",
+        "TIMEDIM",
+        "VICITIMAID",
+        "VICTIMAID",
+        "VICTIMDIM"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
+}

@@ -1,4 +1,4 @@
-from acc_secrets import connection_parameters
+from app_utils.acc_secrets import connection_parameters
 from snowflake.snowpark import Session
 
 import pandas as pd

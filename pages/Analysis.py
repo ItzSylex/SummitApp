@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_extras.no_default_selectbox import selectbox
-
-from build_chart import apply_filters, get_query
+from app_utils.build_chart import apply_filters, get_query
 
 st.set_page_config(
     page_title = 'Summit App Dashboard',
@@ -28,19 +27,31 @@ with st.sidebar:
         with st.expander('', expanded = True):
             gender = selectbox("Gender", options = ['Male', 'Female', 'Non applicable'], label_visibility = 'visible', no_selection_label = 'All')
 
-        st.form_submit_button('Apply filters', type = 'primary', use_container_width= True)
+        st.form_submit_button('Apply    ', type = 'primary', use_container_width= True)
 
-col1, col2 = st.columns([1, 3])
+col1, col2, col3 = st.columns([1, 2, 2])
 with col1:
     with st.expander('Total Crimes', expanded = True):
         apply_filters(get_query('TOTAL_CRIMES'), 'TOTAL_CRIMES', year, province, time_day, gender)
+    with st.expander('Total Homicides', expanded = True):
+        apply_filters(get_query('TOTAL_HOMICIDES'), 'TOTAL_CRIMES', year, province, time_day, gender)
 
 with col2:
-    with st.expander(' ', expanded = True):
-        st.write(' ')
+    with st.expander('Crimes per victim', expanded = True):
+        apply_filters(get_query('CRIMES_PER_VICTIM'), 'CRIMES_PER_VICTIM', year, province, time_day, gender)
 
-with st.expander('Crimes Across time', expanded = True):
-    st.write(' ')
+with col3:
+    with st.expander('Crimes per type', expanded = True):
+        apply_filters(get_query('CRIMES_PER_TYPE'), 'CRIMES_PER_TYPE', year, province, time_day, gender)
+
+col1, col2 = st.columns([3,1])
+with col1:
+    with st.expander('Crimes Across time', expanded = True):
+        apply_filters(get_query('CRIMES_TRU_TIME'), 'CRIMES_TRU_TIME', year, province, time_day, gender)
+
+with col2:
+    with st.expander('10 Cantons with most crimes', expanded= True):
+        apply_filters(get_query('TOP_10_REGIONS'), 'TOP_10_REGIONS', year, province, time_day, gender)
 
 
 
