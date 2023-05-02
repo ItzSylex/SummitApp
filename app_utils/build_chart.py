@@ -32,21 +32,33 @@ def build_chart(query, identifier):
     if identifier == 'CRIMES_PER_TYPE':
         data = session.sql(query).to_pandas()
         data['YEAR'] = data['YEAR'].astype(str)
-        fig = apply_styles(px.bar(data, x = 'DELITO', y = 'TOTAL', color='YEAR', barmode='group', height=200).update_traces(marker_line_width = 0))
+        fig = apply_styles(px.bar(data, x = 'DELITO', y = 'TOTAL', color='YEAR', barmode='stack', height=220).update_traces(marker_line_width = 0))
         
         return st.plotly_chart(fig, use_container_width= True)
     
     if identifier == 'CRIMES_PER_VICTIM':
         df = session.sql(query).to_pandas()
         df['YEAR'] = df['YEAR'].astype(str)
-
-        fig = apply_styles(px.bar(df, x='VICTIMA', y='TOTAL', color='YEAR', barmode='group', height=200).update_traces(marker_line_width = 0))
+        fig = apply_styles(px.bar(df, x='VICTIMA', y='TOTAL', color='YEAR', barmode='stack', height=220).update_traces(marker_line_width = 0))
+        
         return st.plotly_chart(fig, use_container_width=True)
     
     if identifier == 'TOP_10_REGIONS':
         df = session.sql(query).to_pandas()
         df = df.rename(columns={'TOTAL': 'Total Crimes', 'CANTON': 'Canton Name'})
-        st.dataframe(df.set_index('Canton Name'), use_container_width=True)
+        return st.dataframe(df.set_index('Canton Name'), use_container_width=True)
+
+    if identifier == 'CRIMES_DISTRIBUTION_PER_YEARS':
+        df = session.sql(query).to_pandas()
+        fig = apply_styles(px.pie(df, values='TOTAL', names='YEAR', height=220, width=220, hole = .3))
+        fig.update_traces(textposition='inside', textinfo='value')
+        fig.update_layout(legend=dict(
+                            orientation="h",
+                            yanchor="bottom",
+                            y=1.2,
+                            xanchor="right",
+                            x=.8))
+        return st.plotly_chart(fig, use_container_width=True, textfont_size=24)
     
 
 def apply_filters(base_query, identifier, year=None, province=None, time_of_day=None, gender=None):
@@ -153,7 +165,20 @@ def get_query(identifier):
                             [WHERE_CLAUSE_HERE]
                             GROUP BY REGIONDIM.CANTON
                             ORDER BY Total DESC
-                            LIMIT 10"""
+                            LIMIT 10""",
+
+        'CRIMES_DISTRIBUTION_PER_YEARS': """SELECT
+                                                DATEDIM.YEAR,
+                                                COUNT(FACTCRIMES.*) AS TOTAL
+                                            FROM
+                                                FACTCRIMES
+                                                LEFT JOIN DATEDIM ON FACTCRIMES.FECHAID = DATEDIM.FECHAID
+                                            [JOINS_HERE]
+                                            [WHERE_CLAUSE_HERE]
+                                            GROUP BY
+                                                DATEDIM.YEAR
+                                            ORDER BY
+                                                DATEDIM.YEAR ASC"""
     }
 
     return queries[identifier]
@@ -169,7 +194,7 @@ def apply_styles(figure):
 
         plot_bgcolor = '#181824',
         paper_bgcolor = '#181824',
-    )
+)
 
     figure.update_xaxes(showgrid=False, zeroline=False)
     figure.update_yaxes(showgrid=True, zeroline=False, gridwidth=1, gridcolor='#525862', griddash='dot')
