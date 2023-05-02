@@ -25,7 +25,7 @@ def build_chart(query, identifier):
         data = session.sql(query).to_pandas()
         data = data.sort_values(["YEAR", "MONTH"])
 
-        fig = apply_styles(px.line(data, x='MONTHNAME', y='TOTAL', color='YEAR', markers=True, height=340))
+        fig = apply_styles(px.line(data, x='MONTHNAME', y='TOTAL', color='YEAR', markers=True, height=380))
 
         return st.plotly_chart(fig, use_container_width = True)
 

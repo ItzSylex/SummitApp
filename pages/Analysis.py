@@ -58,10 +58,12 @@ col1, col2 = st.columns([3,1])
 with col1:
     with st.expander('Crimes Across time', expanded = True):
         apply_filters(get_query('CRIMES_TRU_TIME'), 'CRIMES_TRU_TIME', year, province, time_day, gender)
+        st.caption('Crimes Across time')
 
 with col2:
     with st.expander('10 Cantons with most crimes', expanded= True):
         apply_filters(get_query('TOP_10_REGIONS'), 'TOP_10_REGIONS', year, province, time_day, gender)
+        st.caption('10 Cantons with most crimes')
 
 
 
