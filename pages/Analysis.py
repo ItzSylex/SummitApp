@@ -1,12 +1,13 @@
 import streamlit as st
-from streamlit_extras.no_default_selectbox import selectbox
-from app_utils.build_chart import apply_filters, get_query
 
 st.set_page_config(
     page_title = 'Summit App Dashboard',
     page_icon = '📈',
     layout = 'wide'
 )
+
+from streamlit_extras.no_default_selectbox import selectbox
+from app_utils.build_chart import apply_filters, get_query
 
 #load custom css
 with open('styles.css') as f:
@@ -59,12 +60,12 @@ with col1:
     with st.expander('Crimes Across time', expanded = True):
         with st.spinner('Loading map'):
             apply_filters(get_query('MAP'), 'MAP', year, province, time_day, gender)
-            st.caption('Crime distribution by province', help = 'Most of the crimes happened inside the GAM, however San Carlos is seen within the top 5 cantons with most crimes.')
+            st.caption('Crime distribution by province', help = 'The crime concentration is in the capital San Jose')
 
 with col2:
     with st.expander('10 Cantons with most crimes', expanded= True):
         apply_filters(get_query('TOP_10_REGIONS'), 'TOP_10_REGIONS', year, province, time_day, gender)
-        st.caption('10 Cantons with most crimes')
+        st.caption('10 Cantons with most crimes', help = 'Most of the crimes happened inside the GAM, however San Carlos is seen within the top 5 cantons with most crimes.')
 
 col1, col2 = st.columns([1,3])
 
@@ -79,5 +80,5 @@ with col1:
         st.caption('Gender distribution', help = 'Male victims are the most affected')
 
 
-st.caption('There are many factors that could determine the decrease of crimes on the year 2020 compared to the year 2019, one could be the global pandemic and the restrictions that this brought to the country, this would also make sense as the amount of crimes that involved people being the victim highly decreased compared to other victims such as cars or buildings.')
+st.write('There are many factors that could determine the decrease of crimes on the year 2020 compared to the year 2019, one could be the global pandemic and the restrictions that this brought to the country, this would also make sense as the amount of crimes that involved people being the victim highly decreased compared to other victims such as cars or buildings.')
 

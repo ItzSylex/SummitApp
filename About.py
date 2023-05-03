@@ -12,11 +12,11 @@ with open('styles.css') as f:
 st.header('Costa Rica - Crime Analysis')
 st.markdown(
     """
-This study presents a comprehensive analysis of crimes in Costa Rica based on the data provided by the Organismo de Investigación Judicial. The report offers detailed information on various types of crimes, including <span class='highlight'>theft, robbery, homicide, and vehicle theft</span>, and categorizes the victims according to different factors such as <span class='highlight'>people, buildings, vehicles, houses, and others</span>.
+This study presents a thorough analysis of crime in Costa Rica, utilizing data provided by the Organismo de Investigación Judicial and a geojson file, which was incorporated into Snowflake using a geometry data type. The report delves into various types of crimes, including <span class='highlight'>theft, robbery, homicide, and vehicle theft</span>, and categorizes victims on <span class='highlight'> people, buildings, vehicles, houses, and others.</span>
 
-In addition, the report provides valuable insights into the specific <span class='highlight'>time</span> and <span class='highlight'>location</span> of the incidents, shedding light on the patterns and trends of criminal activities in the country. 
+The report offers valuable insights into the specific <span class='highlight'> time and location</span> of the incidents, highlighting patterns and trends in criminal activity throughout the country. Notably, the data covers the years 2019-2021, with a focus on analyzing crime trends during the COVID-19 pandemic.
 
-Data contains records from years 2019-2021
+The study was conducted using, <span class='highlight'> Streamlit, Plotly, Snowflake, and CSS</span>, to ensure the highest level of accuracy and comprehensiveness in the analysis.
     """,
     unsafe_allow_html = True
 ) 
