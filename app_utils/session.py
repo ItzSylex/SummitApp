@@ -4,6 +4,7 @@ import streamlit as st
 
 @st.cache_resource(show_spinner=False)
 def get_session():
-    session = Session.builder.configs(**st.secrets["snowflake"]).create()
+    conn = st.experimental_connection('snowpark')
+    session = conn.session
 
     return session
