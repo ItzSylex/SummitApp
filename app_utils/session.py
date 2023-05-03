@@ -2,5 +2,7 @@
 from snowflake.snowpark import Session
 import streamlit as st
 
-conn = st.experimental_connection('snowpark')
-session = conn.session
+@st.cache_resource(show_spinner=False)
+def get_session():
+    session = Session.builder.configs(st.secrets["snowflake"]).create()
+    return session
