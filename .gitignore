@@ -1,2 +1,3 @@
 acc_secrets.py
 __pycache__/
+.streamlit/secrets.toml
