@@ -4,13 +4,15 @@ import plotly.io as pio
 import re
 import geopandas
 
-from .session import session
+from .session import get_session
+
+session = get_session()
 
 pio.templates[pio.templates.default].layout.colorway = ['#4C9CB9', '#B79040', '#DF6E53', '#50B19E']
 
 @st.cache_data(show_spinner = False)
 def cache_map(query):
-    df = session.sql(query).to_pandas()
+    df = cache_query(query)
     df['GEOMETRY'] = geopandas.GeoSeries.from_wkt(df['GEOMETRY'])
     gdf = geopandas.GeoDataFrame(df, geometry='GEOMETRY')
     gdf = gdf.set_index('GEO')
@@ -40,12 +42,13 @@ def format_number(number: int) -> str:
 def build_chart(query, identifier):
 
     if identifier == 'TOTAL_CRIMES':
-        total_crimes_count = session.sql(query).collect()[0][0]
+        total_crimes_count = cache_query(query)
+        total_crimes_count = total_crimes_count['COUNT(*)'].iloc[0]
         number = format_number(total_crimes_count)
         return st.subheader(number)
     
     if identifier == 'CRIMES_TRU_TIME':
-        data = session.sql(query).to_pandas()
+        data = cache_query(query)
         data = data.sort_values(["YEAR", "MONTH"])
 
         fig = apply_styles(px.line(data, x='MONTHNAME', y='TOTAL', color='YEAR', markers=True, height=380))
@@ -53,26 +56,26 @@ def build_chart(query, identifier):
         return st.plotly_chart(fig, use_container_width = True)
 
     if identifier == 'CRIMES_PER_TYPE':
-        data = session.sql(query).to_pandas()
+        data = cache_query(query)
         data['YEAR'] = data['YEAR'].astype(str)
         fig = apply_styles(px.bar(data, x = 'DELITO', y = 'TOTAL', color='YEAR', barmode='stack', height=220).update_traces(marker_line_width = 0))
         
         return st.plotly_chart(fig, use_container_width= True)
     
     if identifier == 'CRIMES_PER_VICTIM':
-        df = session.sql(query).to_pandas()
+        df = cache_query(query)
         df['YEAR'] = df['YEAR'].astype(str)
         fig = apply_styles(px.bar(df, x='VICTIMA', y='TOTAL', color='YEAR', barmode='stack', height=220).update_traces(marker_line_width = 0))
         
         return st.plotly_chart(fig, use_container_width=True)
     
     if identifier == 'TOP_10_REGIONS':
-        df = session.sql(query).to_pandas()
+        df = cache_query(query)
         df = df.rename(columns={'TOTAL': 'Total Crimes', 'CANTON': 'Canton Name'})
         return st.dataframe(df.set_index('Canton Name'), use_container_width=True)
 
     if identifier == 'CRIMES_DISTRIBUTION_PER_YEARS':
-        df = session.sql(query).to_pandas()
+        df = cache_query(query)
         fig = apply_styles(px.pie(df, values='TOTAL', names='YEAR', height=220, width=220, hole = .3))
         fig.update_traces(textposition='inside', textinfo='value')
         fig.update_layout(legend=dict(
@@ -90,7 +93,7 @@ def build_chart(query, identifier):
         return st.plotly_chart(fig, use_container_width=True)
     
     if identifier == 'CRIMES_BY_GENDER':
-        df = session.sql(query).to_pandas()
+        df = cache_query(query)
         fig = apply_styles(px.bar(df, x = 'GENERO', y = 'TOTAL', color='GENERO', barmode='stack', height=380).update_traces(marker_line_width = 0))
         fig.update_layout(legend=dict(
                             orientation="h",
