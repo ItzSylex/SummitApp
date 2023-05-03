@@ -21,4 +21,7 @@ The study was conducted using, <span class='highlight'> Streamlit, Plotly, Snowf
     unsafe_allow_html = True
 ) 
 
+from snowflake.snowpark import Session
+session = Session.builder.configs(**st.secrets["snowflake"]).create()
 
+st.write(session)
