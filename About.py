@@ -1,5 +1,4 @@
 import streamlit as st
-import json
 
 st.set_page_config(
     page_title = 'Summit App - About',
@@ -21,8 +20,3 @@ The study was conducted using, <span class='highlight'> Streamlit, Plotly, Snowf
     """,
     unsafe_allow_html = True
 ) 
-
-from snowflake.snowpark import Session
-session = Session.builder.configs(json.loads(str(**st.secrets["snowflake"]))).create()
-
-st.write(session)
