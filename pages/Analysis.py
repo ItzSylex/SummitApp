@@ -41,29 +41,43 @@ with col1:
 with col2:
     with st.expander('Distribution per years', expanded = True):
         apply_filters(get_query('CRIMES_DISTRIBUTION_PER_YEARS'), 'CRIMES_DISTRIBUTION_PER_YEARS', year, province, time_day, gender)
-        st.caption('Total crimes per year')
+        st.caption('Total crimes per year', help = 'The year 2019 has the most amount of crimes. In the year 2020 only 67.5% of the amount of crimes in 2019 occurred, however the amount of crimes registered in 2021 are 105% of the amount of crimes in 2020, showing an increase in May 2021')
 
 with col3:
     with st.expander('Crimes per victim', expanded = True):
         apply_filters(get_query('CRIMES_PER_VICTIM'), 'CRIMES_PER_VICTIM', year, province, time_day, gender)
-        st.caption('Crime distribution by victim target', help = 'AKSADHFBSKADJHGFSD')
+        st.caption('Crime distribution by victim target', help = 'By victims, compared to 2019, in the years 2020 and 2021, houses, “vehicle” and "buildings" decreased by around 25%, while people as victims decreased by 44%')
 
 with col4:
     with st.expander('Crimes per type', expanded = True):
         apply_filters(get_query('CRIMES_PER_TYPE'), 'CRIMES_PER_TYPE', year, province, time_day, gender)
-        st.caption('Crimes by type')
+        st.caption('Crimes by type', help = 'By type of crime, compared to 2019, in the years 2020 and 2021 there has been an important decrease in the crimes "assault" and "theft", and a smaller decrease in robbery, robbery of vehicles, and homicide.')
 
 
 col1, col2 = st.columns([3,1])
 with col1:
     with st.expander('Crimes Across time', expanded = True):
-        apply_filters(get_query('CRIMES_TRU_TIME'), 'CRIMES_TRU_TIME', year, province, time_day, gender)
-        st.caption('Crimes Across time')
+        with st.spinner('Loading map'):
+            apply_filters(get_query('MAP'), 'MAP', year, province, time_day, gender)
+            st.caption('Crime distribution by province', help = 'Most of the crimes happened inside the GAM, however San Carlos is seen within the top 5 cantons with most crimes.')
 
 with col2:
     with st.expander('10 Cantons with most crimes', expanded= True):
         apply_filters(get_query('TOP_10_REGIONS'), 'TOP_10_REGIONS', year, province, time_day, gender)
         st.caption('10 Cantons with most crimes')
 
+col1, col2 = st.columns([1,3])
 
+with col2:
+    with st.expander('Crimes Across time', expanded = True):
+        apply_filters(get_query('CRIMES_TRU_TIME'), 'CRIMES_TRU_TIME', year, province, time_day, gender)
+        st.caption('Crimes Across time', help = 'Crimes in 2020 decreased significantly')
+
+with col1:
+    with st.expander('Gender distribution', expanded=True):
+        apply_filters(get_query('CRIMES_BY_GENDER'), 'CRIMES_BY_GENDER', year, province, time_day, gender)
+        st.caption('Gender distribution', help = 'Male victims are the most affected')
+
+
+st.caption('There are many factors that could determine the decrease of crimes on the year 2020 compared to the year 2019, one could be the global pandemic and the restrictions that this brought to the country, this would also make sense as the amount of crimes that involved people being the victim highly decreased compared to other victims such as cars or buildings.')
 

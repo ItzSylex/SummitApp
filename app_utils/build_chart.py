@@ -2,10 +2,33 @@ import streamlit as st
 import plotly.express as px
 import plotly.io as pio
 import re
+import geopandas
 
 from .session import session
 
 pio.templates[pio.templates.default].layout.colorway = ['#4C9CB9', '#B79040', '#DF6E53', '#50B19E']
+
+@st.cache_data(show_spinner = False)
+def cache_map(query):
+    df = session.sql(query).to_pandas()
+    df['GEOMETRY'] = geopandas.GeoSeries.from_wkt(df['GEOMETRY'])
+    gdf = geopandas.GeoDataFrame(df, geometry='GEOMETRY')
+    gdf = gdf.set_index('GEO')
+
+    fig = px.choropleth_mapbox(gdf, geojson = gdf.GEOMETRY,
+        locations = gdf.index, color = 'TOTAL_CRIMES',
+        center = {"lat": 9.9281, "lon": -84.0907}, zoom = 6.2,
+        mapbox_style = "carto-darkmatter",
+        color_continuous_scale = ["#fffaec", "#FCDA6F", "#F8B27A"],
+        height=360
+    )
+    return fig
+
+@st.cache_data(show_spinner=False)
+def cache_query(query):
+    df = session.sql(query).to_pandas()
+
+    return df
 
 def format_number(number: int) -> str:
     if number >= 1000:
@@ -58,8 +81,25 @@ def build_chart(query, identifier):
                             y=1.2,
                             xanchor="right",
                             x=.8))
-        return st.plotly_chart(fig, use_container_width=True, textfont_size=24)
+        fig = apply_styles(fig)
+        return st.plotly_chart(fig, use_container_width=True)
+
+    if identifier == 'MAP':
+        fig = cache_map(query)
+        fig = apply_styles(fig)
+        return st.plotly_chart(fig, use_container_width=True)
     
+    if identifier == 'CRIMES_BY_GENDER':
+        df = session.sql(query).to_pandas()
+        fig = apply_styles(px.bar(df, x = 'GENERO', y = 'TOTAL', color='GENERO', barmode='stack', height=380).update_traces(marker_line_width = 0))
+        fig.update_layout(legend=dict(
+                            orientation="h",
+                            yanchor="bottom",
+                            y=1.2,
+                            xanchor="right",
+                            x=.8))
+        
+        return st.plotly_chart(fig, use_container_width= True)
 
 def apply_filters(base_query, identifier, year=None, province=None, time_of_day=None, gender=None):
     joins = set()
@@ -178,7 +218,17 @@ def get_query(identifier):
                                             GROUP BY
                                                 DATEDIM.YEAR
                                             ORDER BY
-                                                DATEDIM.YEAR ASC"""
+                                                DATEDIM.YEAR ASC""",
+        'MAP': "SELECT * FROM GEODATA", 
+
+        'CRIMES_BY_GENDER': """SELECT 
+                                    COUNT(FACTCRIMES.*) AS TOTAL, VICTIMDIM.GENERO
+                                FROM
+                                    FACTCRIMES
+                                    LEFT JOIN VICTIMDIM ON FACTCRIMES.VICTIMAID = VICTIMDIM.VICTIMAID
+                                [JOINS_HERE]
+                                [WHERE_CLAUSE_HERE]
+                                GROUP BY VICTIMDIM.GENERO"""
     }
 
     return queries[identifier]
