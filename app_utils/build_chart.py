@@ -29,7 +29,6 @@ def cache_map(query):
 @st.cache_data(show_spinner=False)
 def cache_query(query):
     df = session.sql(query).to_pandas()
-
     return df
 
 def format_number(number: int) -> str:
