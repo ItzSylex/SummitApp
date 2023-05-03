@@ -4,3 +4,5 @@ snowflake==0.0.3
 streamlit==1.21.0
 streamlit_extras==0.2.7
 pyarrow==8.0.0
+snowflake_snowpark_python
+snowflake-connector-python==2.8.0
