@@ -103,7 +103,7 @@ def build_chart(query, identifier):
     if identifier == 'CRIMES_DISTRIBUTION_PER_YEARS':
         df = cache_query(query)
         fig = apply_styles(px.pie(df, values='TOTAL', names='YEAR', height=220, width=220, hole = .3))
-        fig.update_traces(textposition='inside', textinfo='value')
+        fig.update_traces(textposition='inside', textinfo='value+percent')
         fig = apply_styles(fig)
         return st.plotly_chart(fig, use_container_width=True)
 
