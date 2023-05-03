@@ -1,7 +1,5 @@
-streamlit-extras
-snowflake-connector-python
-snowflake-snowpark-python
-streamlit
-pandas
-geopandas
-plotly
+geopandas==0.12.2
+plotly==5.14.1
+snowflake==0.0.3
+streamlit==1.21.0
+streamlit_extras==0.2.7
