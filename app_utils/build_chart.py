@@ -51,6 +51,7 @@ def apply_styles(figure, legend=None):
 
         plot_bgcolor = '#181824',
         paper_bgcolor = '#181824',
+        legend_traceorder = 'grouped'
 )
 
     figure.update_xaxes(showgrid=False, zeroline=False)
@@ -86,13 +87,15 @@ def build_chart(query, identifier):
         return st.plotly_chart(fig, use_container_width = True)
 
     if identifier == 'CRIMES_PER_TYPE':
-        data = cache_query(query)
-        fig = create_bar_chart(data, 'DELITO', 'TOTAL', 'YEAR', 220)
+        df = cache_query(query)
+        df = df.sort_values(by = 'TOTAL', ascending=False)
+        fig = apply_styles(create_bar_chart(df, 'DELITO', 'TOTAL', 'YEAR', 220))
         return st.plotly_chart(fig, use_container_width= True)
     
     if identifier == 'CRIMES_PER_VICTIM':
         df = cache_query(query)
-        fig = create_bar_chart(df, 'VICTIMA', 'TOTAL', 'YEAR', 220)
+        df = df.sort_values(by = 'TOTAL', ascending=False)
+        fig = apply_styles(create_bar_chart(df, 'VICTIMA', 'TOTAL', 'YEAR', 220))
         return st.plotly_chart(fig, use_container_width=True)
     
     if identifier == 'TOP_10_REGIONS':
@@ -102,7 +105,7 @@ def build_chart(query, identifier):
 
     if identifier == 'CRIMES_DISTRIBUTION_PER_YEARS':
         df = cache_query(query)
-        fig = apply_styles(px.pie(df, values='TOTAL', names='YEAR', height=220, width=220, hole = .3))
+        fig = apply_styles(px.pie(df, values='TOTAL', names='YEAR', height=220, width=220, hole=0.4))
         fig.update_traces(textposition='inside', textinfo='value+percent')
         fig = apply_styles(fig)
         return st.plotly_chart(fig, use_container_width=True)
@@ -114,7 +117,8 @@ def build_chart(query, identifier):
     
     if identifier == 'CRIMES_BY_GENDER':
         df = cache_query(query)
-        fig = apply_styles(px.bar(df, x = 'GENERO', y = 'TOTAL', color='GENERO', barmode='stack', height=380).update_traces(marker_line_width = 0), 'top_legend')
+        df = df.sort_values(by = 'TOTAL', ascending=False)
+        fig = apply_styles(px.bar(df, x = 'TOTAL', y = 'GENERO', color='GENERO', barmode='stack', height=380, orientation='h').update_traces(marker_line_width = 0), 'top_legend')
         return st.plotly_chart(fig, use_container_width= True)
 
 
@@ -246,7 +250,8 @@ def get_query(identifier):
                                     LEFT JOIN VICTIMDIM ON FACTCRIMES.VICTIMAID = VICTIMDIM.VICTIMAID
                                 [JOINS_HERE]
                                 [WHERE_CLAUSE_HERE]
-                                GROUP BY VICTIMDIM.GENERO"""
+                                GROUP BY VICTIMDIM.GENERO
+                                ORDER BY TOTAL"""
     }
 
     return queries[identifier]

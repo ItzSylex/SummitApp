@@ -46,7 +46,7 @@ with col2:
 
 with col3:
     with st.expander('Crimes per victim', expanded = True):
-        st.caption('Crime distribution by victim target', help = 'By victims, compared to 2019, in the years 2020 and 2021, houses, “vehicle” and "buildings" decreased by around 25%, while people as victims decreased by 44%')
+        st.caption('Crime distribution by victim target', help = 'By victims, compared to 2019, in the years 2020 and 2021, "houses", "vehicle" and "buildings" decreased by around 25%, while people as victims decreased by 44%')
         apply_filters(get_query('CRIMES_PER_VICTIM'), 'CRIMES_PER_VICTIM', year, province, time_day, gender)
 
 with col4:
@@ -67,7 +67,7 @@ with col2:
         st.caption('Regions with most crimes', help = 'Most of the crimes happened inside the GAM, however San Carlos is seen within the top 5 cantons with most crimes.')
         apply_filters(get_query('TOP_10_REGIONS'), 'TOP_10_REGIONS', year, province, time_day, gender)
 
-col1, col2 = st.columns([1,3])
+col1, col2 = st.columns([1.4,3])
 
 with col2:
     with st.expander('Crimes Across time', expanded = True):
@@ -79,6 +79,6 @@ with col1:
         st.caption('Gender distribution', help = 'Male victims are the most affected')
         apply_filters(get_query('CRIMES_BY_GENDER'), 'CRIMES_BY_GENDER', year, province, time_day, gender)
 
-
-st.write('There are many factors that could determine the decrease of crimes on the year 2020 compared to the year 2019, one could be the global pandemic and the restrictions that this brought to the country, this would also make sense as the amount of crimes that involved people being the victim highly decreased compared to other victims such as cars or buildings.')
+with st.expander('results', expanded=True):
+    st.write('There are many factors that could determine the decrease of crimes on the year 2020 compared to the year 2019, one could be the global pandemic and the restrictions that this brought to the country, this would also make sense as the amount of crimes that involved people being the victim highly decreased compared to other victims such as cars or buildings.')
 
