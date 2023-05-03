@@ -37,7 +37,7 @@ with col1:
         st.caption('Total Crimes')
     with st.expander('Total Homicides', expanded = True):
         apply_filters(get_query('TOTAL_HOMICIDES'), 'CRIMES_NUMBER', year, province, time_day, gender)
-        st.caption('Total Homicides')
+        st.caption('Total lethal crimes')
 
 with col2:
     with st.expander('Distribution per years', expanded = True):
@@ -65,7 +65,7 @@ with col1:
 with col2:
     with st.expander('10 Cantons with most crimes', expanded= True):
         apply_filters(get_query('TOP_10_REGIONS'), 'TOP_10_REGIONS', year, province, time_day, gender)
-        st.caption('10 Cantons with most crimes', help = 'Most of the crimes happened inside the GAM, however San Carlos is seen within the top 5 cantons with most crimes.')
+        st.caption('10 regions with most crimes', help = 'Most of the crimes happened inside the GAM, however San Carlos is seen within the top 5 cantons with most crimes.')
 
 col1, col2 = st.columns([1,3])
 
