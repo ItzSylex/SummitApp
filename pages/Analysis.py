@@ -33,10 +33,10 @@ with st.sidebar:
 col1, col2, col3, col4 = st.columns([1.3, 2, 3, 3])
 with col1:
     with st.expander('Total Crimes', expanded = True):
-        apply_filters(get_query('TOTAL_CRIMES'), 'TOTAL_CRIMES', year, province, time_day, gender)
+        apply_filters(get_query('TOTAL_CRIMES'), 'CRIMES_NUMBER', year, province, time_day, gender)
         st.caption('Total Crimes')
     with st.expander('Total Homicides', expanded = True):
-        apply_filters(get_query('TOTAL_HOMICIDES'), 'TOTAL_CRIMES', year, province, time_day, gender)
+        apply_filters(get_query('TOTAL_HOMICIDES'), 'CRIMES_NUMBER', year, province, time_day, gender)
         st.caption('Total Homicides')
 
 with col2:

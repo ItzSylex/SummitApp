@@ -6,31 +6,35 @@ import geopandas
 
 from .session import get_session
 
+# Get session object from another module
 session = get_session()
 
+# Set the default color scheme for Plotly
 pio.templates[pio.templates.default].layout.colorway = ['#4C9CB9', '#B79040', '#DF6E53', '#50B19E']
 
-@st.cache_data(show_spinner = False)
+# Decorator to cache data returned by cache_map() function
+@st.cache_data(show_spinner=False)
 def cache_map(query):
+    # Get data using cache_query() function and convert GEOMETRY column to GeoSeries
     df = cache_query(query)
     df['GEOMETRY'] = geopandas.GeoSeries.from_wkt(df['GEOMETRY'])
     gdf = geopandas.GeoDataFrame(df, geometry='GEOMETRY')
     gdf = gdf.set_index('GEO')
 
-    fig = px.choropleth_mapbox(gdf, geojson = gdf.GEOMETRY,
-        locations = gdf.index, color = 'TOTAL_CRIMES',
-        center = {"lat": 9.9281, "lon": -84.0907}, zoom = 6.2,
-        mapbox_style = "carto-darkmatter",
-        color_continuous_scale = ["#fffaec", "#FCDA6F", "#F8B27A"],
-        height=360
-    )
+    # Generate choropleth map using Plotly and return the figure object
+    fig = px.choropleth_mapbox(gdf, geojson=gdf.GEOMETRY, locations=gdf.index, color='TOTAL_CRIMES',
+                               center={"lat": 9.9281, "lon": -84.0907}, zoom=6.2, mapbox_style="carto-darkmatter",
+                               color_continuous_scale=["#fffaec", "#FCDA6F", "#F8B27A"], height=360)
     return fig
 
+# Decorator to cache data returned by cache_query() function
 @st.cache_data(show_spinner=False)
 def cache_query(query):
+    # Get data from session object and convert to pandas DataFrame
     df = session.sql(query).to_pandas()
     return df
 
+# Function to format number with a "k" suffix if it's greater than or equal to 1000
 def format_number(number: int) -> str:
     if number >= 1000:
         formatted_number = f"{round(number/1000, 1)}k"
@@ -38,9 +42,36 @@ def format_number(number: int) -> str:
         formatted_number = str(number)
     return formatted_number
 
+# Function to apply custom styles to Plotly charts
+def apply_styles(figure, legend=None):
+    figure.update_layout(
+        margin=dict(l=0, r=0, t=0, b=0),
+        yaxis_title=None, xaxis_title=None,
+        legend_title=None,
+
+        plot_bgcolor = '#181824',
+        paper_bgcolor = '#181824',
+)
+
+    figure.update_xaxes(showgrid=False, zeroline=False)
+    figure.update_yaxes(showgrid=True, zeroline=False, gridwidth=1, gridcolor='#525862', griddash='dot')
+
+    if legend == 'top_legend':
+        figure.update_layout(legend=dict( orientation="h", yanchor="bottom", y=1.2,  xanchor="right",  x=.8))
+
+    return figure
+    
+
+# Function to create a Plotly bar chart
+def create_bar_chart(data, x, y, color, height):
+    data['YEAR'] = data['YEAR'].astype(str)
+    fig = apply_styles(px.bar(data, x=x, y=y, color=color, barmode='stack', height=height).update_traces(marker_line_width=0))
+    return fig
+
+# Function to build all charts
 def build_chart(query, identifier):
 
-    if identifier == 'TOTAL_CRIMES':
+    if identifier == 'CRIMES_NUMBER':
         total_crimes_count = cache_query(query)
         total_crimes_count = total_crimes_count['COUNT(*)'].iloc[0]
         number = format_number(total_crimes_count)
@@ -56,16 +87,12 @@ def build_chart(query, identifier):
 
     if identifier == 'CRIMES_PER_TYPE':
         data = cache_query(query)
-        data['YEAR'] = data['YEAR'].astype(str)
-        fig = apply_styles(px.bar(data, x = 'DELITO', y = 'TOTAL', color='YEAR', barmode='stack', height=220).update_traces(marker_line_width = 0))
-        
+        fig = create_bar_chart(data, 'DELITO', 'TOTAL', 'YEAR', 220)
         return st.plotly_chart(fig, use_container_width= True)
     
     if identifier == 'CRIMES_PER_VICTIM':
         df = cache_query(query)
-        df['YEAR'] = df['YEAR'].astype(str)
-        fig = apply_styles(px.bar(df, x='VICTIMA', y='TOTAL', color='YEAR', barmode='stack', height=220).update_traces(marker_line_width = 0))
-        
+        fig = create_bar_chart(df, 'VICTIMA', 'TOTAL', 'YEAR', 220)
         return st.plotly_chart(fig, use_container_width=True)
     
     if identifier == 'TOP_10_REGIONS':
@@ -77,12 +104,6 @@ def build_chart(query, identifier):
         df = cache_query(query)
         fig = apply_styles(px.pie(df, values='TOTAL', names='YEAR', height=220, width=220, hole = .3))
         fig.update_traces(textposition='inside', textinfo='value')
-        fig.update_layout(legend=dict(
-                            orientation="h",
-                            yanchor="bottom",
-                            y=1.2,
-                            xanchor="right",
-                            x=.8))
         fig = apply_styles(fig)
         return st.plotly_chart(fig, use_container_width=True)
 
@@ -93,16 +114,11 @@ def build_chart(query, identifier):
     
     if identifier == 'CRIMES_BY_GENDER':
         df = cache_query(query)
-        fig = apply_styles(px.bar(df, x = 'GENERO', y = 'TOTAL', color='GENERO', barmode='stack', height=380).update_traces(marker_line_width = 0))
-        fig.update_layout(legend=dict(
-                            orientation="h",
-                            yanchor="bottom",
-                            y=1.2,
-                            xanchor="right",
-                            x=.8))
-        
+        fig = apply_styles(px.bar(df, x = 'GENERO', y = 'TOTAL', color='GENERO', barmode='stack', height=380).update_traces(marker_line_width = 0), 'top_legend')
         return st.plotly_chart(fig, use_container_width= True)
 
+
+# Dynamically generate the query based on the filters selected.
 def apply_filters(base_query, identifier, year=None, province=None, time_of_day=None, gender=None):
     joins = set()
     filters = []
@@ -235,21 +251,4 @@ def get_query(identifier):
 
     return queries[identifier]
 
-
-
-def apply_styles(figure):
-    figure.update_layout(
-        margin=dict(l=0, r=0, t=0, b=0),
-        yaxis_title=None,
-        xaxis_title=None,
-        legend_title=None,
-
-        plot_bgcolor = '#181824',
-        paper_bgcolor = '#181824',
-)
-
-    figure.update_xaxes(showgrid=False, zeroline=False)
-    figure.update_yaxes(showgrid=True, zeroline=False, gridwidth=1, gridcolor='#525862', griddash='dot')
-
-    return figure
     
