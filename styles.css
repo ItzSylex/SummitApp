@@ -141,3 +141,9 @@ p {
 .stSelectbox [data-baseweb="select"] > div {
     background-color: var(--contrast);
 }
+
+@media screen and (max-width: 1400px) {
+    body {
+      zoom: 80%;
+    }
+  }
