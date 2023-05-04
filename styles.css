@@ -142,7 +142,7 @@ p {
     background-color: var(--contrast);
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1440px) {
     body {
       zoom: 80%;
     }
